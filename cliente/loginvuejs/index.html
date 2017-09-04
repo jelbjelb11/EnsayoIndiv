@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Master-Detail</title>
+			  <meta charset="utf-8">
+  			<meta name="viewport" content="width=device-width">
+  			<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.16/vue.js"></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+			<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+			<link rel="stylesheet" type="text/css" href="styles.css">
+		</head>
+		<body>
+		<!--	<div id="Master-Detail"> 
+		-->
+					<ul class="nav nav-pills nav-justified">
+					  	<li><a :class ="anchorClass('Entradas')" v-on:click="chooseMenu('Entradas')">Entradas</a></li>
+					  	<li><a :class ="anchorClass('Peliculas')" v-on:click="chooseMenu('Peliculas')">Peliculas</a></li>
+					</ul>
+<!--
+<div class="list-group">
+  <a href="#" class="list-group-item active">
+    Cras justo odio
+  </a>
+  <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+  <a href="#" class="list-group-item">Morbi leo risus</a>
+  <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+  <a href="#" class="list-group-item">Vestibulum at eros</a>
+</div>
+-->
+<div class="list-group">
+  <button type="button" class="list-group-item list-group-item-action active">
+    Cras justo odio
+  </button>
+  <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis in</button>
+  <button type="button" class="list-group-item list-group-item-action">Morbi leo risus</button>
+  <button type="button" class="list-group-item list-group-item-action">Porta ac consectetur ac</button>
+  <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum at eros</button>
+</div>
+
+
+				<div id="Master" class="master-div">
+
+					<h2></td>Estás visualizando tus {{ menuChoice.toLowerCase() }} </h2>
+					<div v-if="menuChoice==='Peliculas'">
+						<ul class="listado">
+							<li :class=computedClass(item.Id) v-for="(item, index) in lista"> 
+		  						<span class="badge" v-on:click="readDetail(item.Id)">{{index.Duracion}} min.</span> {{index.Titulo}}
+			  				<!--		<div class ="rowButtonsContainer" >
+										<button class="masterButton" v-on:click="readDetail(item.Id)" ><img class="buttonImage" src="images/read.png"/></button>
+										<button class="masterButton" v-on:click="updateDetail(item.Id)" ><img class="buttonImage" src="images/update.png"/></button>
+										<button class="masterButton" v-on:click="deleteItem(item.Id)" ><img class="buttonImage" src="images/delete.png"/></button>
+									</div> -->
+		  					<!--	<v-else="menuChoice==='Entradas'" span class="badge">Duracion {{index.Duracion}}min</span> {{index.Titulo}}	-->
+							</li>
+						</ul>
+					<pre>{{ $data | json }}</pre>
+					</div>
+					<div v-if="menuChoice==='Entradas'">
+						<ul class="listado">
+							<li :class=computedClass(item.Id) v-for="(item, index) in lista">
+		  						<span class="badge"  v-on:click="readDetail(item.Id)">Sala {{index.Sala}}</span> {{index.Pelicula}}
+		  					<!--	<v-else="menuChoice==='Entradas'" span class="badge">Duracion {{index.Duracion}}min</span> {{index.Titulo}}	-->
+							</li>
+						</ul>
+					<pre>{{ $data | json }}</pre>
+					</div>
+				</div>
+
+				<div id="Detail" class="detail-div">
+					</br>
+					<div v-if="menuChoice==='Entradas'">
+						<form role="form">
+						 	<div class="form-group">
+							    <label for="inputPelicula">Película</label>
+							    <input v-model="currentObject.property1" type="text" class="form-control" id="exampleInputEmail1"
+						        	placeholder="Título de la película">
+						        <label for="inputSala">Sala</label>
+							    <input :disabled="read" v-model="currentObject.property2" type="number" class="form-control" id="exampleInputEmail1"
+						        	placeholder="Número de sala">
+						        <label for="inputButaca">Butaca</label>
+							    <input :disabled="read" v-model="currentObject.property3" type="number" class="form-control" id="exampleInputEmail1"
+						        placeholder="Número de butaca">
+						        <br>
+
+						        <div class="btn-group" role="group" aria-label="...">
+						<!--			<button type="button" class="btn btn-primary" id="acceptButton" v-on:click="buttonAccept">Aceptar</button> -->
+									<button type="button" class="btn btn-primary" value="Guardar" id="acceptButton" v-on:click="buttonAccept">
+	         						<span class="glyphicon glyphicon-save"></span> Guardar
+								</div>
+								<div class="btn-group" role="group" aria-label="...">
+									<button type="button" class="btn btn-info" id="limpiarButton" v-on:click="buttonClean">Limpiar</button>
+								</div>
+								<div class="btn-group" role="group" aria-label="...">
+									<button type="button" class="btn btn-default" id="resetButton" v-on:click="buttonReset">Reset</button>
+								</div>
+						        
+						  	</div>
+						</form>
+					</div>	
+					<div v-if="menuChoice==='Peliculas'">
+						<form role="form">
+						 	<div class="form-group">
+							    <label for="inputPelicula">Película</label>
+							    <input type="email" class="form-control" id="exampleInputEmail1"
+						        	placeholder="Título de la película">
+						        <label for="inputSala">Duración</label>
+							    <input type="email" class="form-control" id="exampleInputEmail1"
+						        	placeholder="Duración en minutos">
+						        <label for="inputButaca">Idioma</label>
+							    <input type="email" class="form-control" id="exampleInputEmail1"
+						        placeholder="Introduzca el idioma">
+						        <label for="inputButaca">Disponible en 3D</label>
+							    <input type="email" class="form-control" id="exampleInputEmail1"
+						        placeholder="¿3D?">
+						        <br>
+
+							        <div class="btn-group" role="group" aria-label="...">
+							<!--			<button type="button" class="btn btn-primary" id="acceptButton" v-on:click="buttonAccept">Aceptar</button> -->
+										<button type="button" class="btn btn-primary" value="Guardar" id="acceptButton" v-on:click="buttonAccept">
+		         						<span class="glyphicon glyphicon-save"></span> Guardar
+									</div>
+
+									<div class="btn-group" role="group" aria-label="...">
+										<button type="button" class="btn btn-info" id="limpiarButton" v-on:click="buttonClean">Leer</button>
+									</div>
+
+									<div class="btn-group" role="group" aria-label="...">
+										<button type="button" class="btn btn-default" id="resetButton" v-on:click="buttonReset">Reset</button>
+									</div>
+						        
+						  	</div>
+						</form>
+					</div>	
+				<!--	<form class="form-horizontal" role="form">
+					  	<div class="form-group">
+					    	<label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+						    	<div class="col-sm-10">
+						      		<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+						    	</div>
+					  	</div>
+					  	<div class="form-group">
+						    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+							    <div class="col-sm-10">
+							      	<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+							    </div>
+					  	</div>
+					  	<div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+							     <div class="checkbox">
+							        <label>
+							          	<input type="checkbox"> Remember me
+							        </label>
+							     </div>
+						    </div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+							    <button type="submit" class="btn btn-default">Sign in</button>
+							</div>
+						</div>
+					</form> -->
+
+			<!--		</br>
+					</br>
+					</br>
+					</br>
+					<table border="0">
+					<tr>
+					<td width="50%"><label>Titulo:</label></td>
+					<td width="50%"><input :disabled="read" v-model="currentObject.property1" type="text" id="nombreInput" placeholder="Titulo"></input></td>
+					</tr>
+					</br>
+					<label>Sala:</label>
+					<input :disabled="read" v-model="currentObject.property1" type="number" id="nombreInput" placeholder="Número de sala"></input>
+					</br>
+					<label>Butaca:</label>
+					<input :disabled="read" v-model="currentObject.property1" type="number" id="nombreInput" placeholder="Núemro de Butaca"></input> -->
+
+				</div>
+		<!--			<pre>{{ $data | json }}</pre>		-->
+		<!--	</div>	-->
+			<script src ="index.js"></script>
+		<!--	<pre>{{ $data | json }}</pre> 		-->
+		</body>
+	</html>
+
+<!--
+	<body>
+
+		<div id="Master-Detail">
+			<div id = "Menu" >
+					<a :class ="anchorClass('Usuarios')" v-on:click="chooseMenu('Usuarios')">Usuarios</a>
+					<a :class ="anchorClass('CuentaBancarias')" v-on:click="chooseMenu('CuentaBancarias')">Cuentas Bancarias</a>
+					<a :class ="anchorClass('Domicilios')" v-on:click="chooseMenu('Domicilios')">Domicilios</a>
+			</div>
+			<div id="Master" class="master-div">
+				<h1>MASTER: {{menuChoice}}</h1>
+
+					<div :class=computedClass(item.Id) v-for="(item, index) in lista" >
+						<p class = "nameParagraph">{{index}}</p>
+						<p class = "nameParagraph">{{item.Nombre}}</p>
+							<div class ="rowButtonsContainer" >
+								<button class="masterButton" v-on:click="readDetail(item.Id)" ><img class="buttonImage" src="images/read.png"/></button>
+								<button class="masterButton" v-on:click="updateDetail(item.Id)" ><img class="buttonImage" src="images/update.png"/></button>
+								<button class="masterButton" v-on:click="deleteItem(item.Id)" ><img class="buttonImage" src="images/delete.png"/></button>
+							</div>
+					</div>
+				<button class="masterButton buttonNew" v-on:click="newDetail()" ><img class="buttonImage" src="images/new.png"/></button>
+
+			</div>
+			<div class="detail-div" id="Detail">
+				<h1>DETAIL</h1>
+
+					<div id ="FormularioUsuarios"  class="Formulario">
+							<label v-if="menuChoice==='Usuarios'">Nombre:</label>
+							<label v-else-if="menuChoice==='CuentaBancarias'">Credito:</label>
+							<label v-else="menuChoice==='Domicilios'">Calle:</label>
+
+							<input v-if="menuChoice==='Usuarios'" :disabled="read" v-model="currentObject.property1" type="text" id="nombreInput" placeholder="Nombre"></input>
+							<input v-else-if="menuChoice==='CuentaBancarias'" :disabled="read" v-model="currentObject.property1" type="checkbox" id="nombreInput" placeholder="Credito"></input>
+							<input v-else="menuChoice==='Domicilios'" :disabled="read" v-model="currentObject.property1" type="text" id="nombreInput" placeholder="Calle"></input>
+						</br>
+
+						<label v-if="menuChoice==='Usuarios'">Apellido:</label>
+						<label v-else="menuChoice==='CuentaBancarias'">Numero:</label>
+
+						<input v-if="menuChoice==='Usuarios'":disabled="read" type="text" v-model="currentObject.property2" id="apellidoInput" placeholder="Apellido"></input>
+						<input v-else="menuChoice==='CuentaBancarias'" :disabled="read" type="number" v-model="currentObject.property2" id="apellidoInput" placeholder="Numero"></input>
+						</br>
+
+						<label v-if="menuChoice==='Usuarios'">Edad:</label>
+						<label v-else-if="menuChoice==='CuentaBancarias'">Saldo:</label>
+						<label v-else="menuChoice==='Domicilios'">Ciudad:</label>
+
+						<input v-if="menuChoice==='Usuarios'" :disabled="read" type="number" v-model="currentObject.property3" id="edadInput" placeholder="Edad"></input>
+						<input v-else-if="menuChoice==='CuentaBancarias'" :disabled="read" type="number" v-model="currentObject.property3" id="edadInput" placeholder="Saldo"></input>
+						<input v-else="menuChoice==='Domicilios'" :disabled="read" type="text" v-model="currentObject.property3" id="edadInput" placeholder="Ciudad"></input>
+							<div class = "buttonContainer">
+								<button  id="acceptButton" v-on:click="buttonAccept">ACEPTAR</button>
+								<button  id="limpiarButton" v-on:click="buttonClean">LIMPIAR</button>
+								<button  id="resetButton" v-on:click="buttonReset">RESET</button>
+							</div>
+
+					</div>
+			</div>
+			<script src ="index.js"></script>
+		</div>
+	</body>
+</html>
+
+-->
+

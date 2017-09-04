@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Master-Detail</title>
+	<script src="https://unpkg.com/vue"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+	<body>
+
+		<div id="Master-Detail">
+			<div id = "Menu" >
+					<a :class ="anchorClass('Usuarios')" v-on:click="chooseMenu('Usuarios')">Usuarios</a>
+					<a :class ="anchorClass('CuentaBancarias')" v-on:click="chooseMenu('CuentaBancarias')">Cuentas Bancarias</a>
+					<a :class ="anchorClass('Domicilios')" v-on:click="chooseMenu('Domicilios')">Domicilios</a>
+
+			</div>
+			<div id="Master" class="master-div">
+				<h1>MASTER: {{menuChoice}}</h1>
+
+					<div :class=computedClass(item.Id) v-for="(item, index) in lista" >
+						<p class = "nameParagraph">{{index}}</p>
+						<p class = "nameParagraph">{{item.Nombre}}</p>
+							<div class ="rowButtonsContainer" >
+								<button class="masterButton" v-on:click="readDetail(item.Id)" ><img class="buttonImage" src="images/read.png"/></button>
+								<button class="masterButton" v-on:click="updateDetail(item.Id)" ><img class="buttonImage" src="images/update.png"/></button>
+								<button class="masterButton" v-on:click="deleteItem(item.Id)" ><img class="buttonImage" src="images/delete.png"/></button>
+							</div>
+					</div>
+				<button class="masterButton buttonNew" v-on:click="newDetail()" ><img class="buttonImage" src="images/new.png"/></button>
+
+			</div>
+			<div class="detail-div" id="Detail">
+				<h1>DETAIL</h1>
+
+					<div id ="FormularioUsuarios"  class="Formulario">
+							<label v-if="menuChoice==='Usuarios'">Nombre:</label>
+							<label v-else-if="menuChoice==='CuentaBancarias'">Credito:</label>
+							<label v-else="menuChoice==='Domicilios'">Calle:</label>
+
+							<input v-if="menuChoice==='Usuarios'" :disabled="read" v-model="currentObject.property1" type="text" id="nombreInput" placeholder="Nombre"></input>
+							<input v-else-if="menuChoice==='CuentaBancarias'" :disabled="read" v-model="currentObject.property1" type="checkbox" id="nombreInput" placeholder="Credito"></input>
+							<input v-else="menuChoice==='Domicilios'" :disabled="read" v-model="currentObject.property1" type="text" id="nombreInput" placeholder="Calle"></input>
+						</br>
+
+						<label v-if="menuChoice==='Usuarios'">Apellido:</label>
+						<label v-else="menuChoice==='CuentaBancarias'">Numero:</label>
+
+						<input v-if="menuChoice==='Usuarios'":disabled="read" type="text" v-model="currentObject.property2" id="apellidoInput" placeholder="Apellido"></input>
+						<input v-else="menuChoice==='CuentaBancarias'" :disabled="read" type="number" v-model="currentObject.property2" id="apellidoInput" placeholder="Numero"></input>
+						</br>
+
+						<label v-if="menuChoice==='Usuarios'">Edad:</label>
+						<label v-else-if="menuChoice==='CuentaBancarias'">Saldo:</label>
+						<label v-else="menuChoice==='Domicilios'">Ciudad:</label>
+
+						<input v-if="menuChoice==='Usuarios'" :disabled="read" type="number" v-model="currentObject.property3" id="edadInput" placeholder="Edad"></input>
+						<input v-else-if="menuChoice==='CuentaBancarias'" :disabled="read" type="number" v-model="currentObject.property3" id="edadInput" placeholder="Saldo"></input>
+						<input v-else="menuChoice==='Domicilios'" :disabled="read" type="text" v-model="currentObject.property3" id="edadInput" placeholder="Ciudad"></input>
+							<div class = "buttonContainer">
+								<button  id="acceptButton" v-on:click="buttonAccept">ACEPTAR</button>
+								<button  id="limpiarButton" v-on:click="buttonClean">LIMPIAR</button>
+								<button  id="resetButton" v-on:click="buttonReset">RESET</button>
+							</div>
+
+					</div>
+			</div>
+			<script src ="index.js"></script>
+		</div>
+	</body>
+</html>
+
+
+
